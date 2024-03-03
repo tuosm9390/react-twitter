@@ -28,7 +28,7 @@ export default function PostBox({ post }: PostBoxProps) {
   return (
     <div className='post__box'>
       <Link to={`/posts/${post?.id}`}>
-        <div className='post__box -profile'>
+        <div className='post__box-profile'>
           <div className='post__flex'>
             {post?.profileUrl ? (
               <img
@@ -43,6 +43,13 @@ export default function PostBox({ post }: PostBoxProps) {
             <div className='post__cratedAt'>{post?.createdAt}</div>
           </div>
           <div className='post__box-content'>{post?.content}</div>
+          <div className="post-form__hashtags-outputs">
+            {post?.hashTags?.map((tag, index) => (
+              <span className="post-form__hashtags-tag" key={index}>
+                #{tag}
+              </span>
+            ))}
+          </div>
         </div>
       </Link>
       <div className='post__box-footer'>
