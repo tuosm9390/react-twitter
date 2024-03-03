@@ -1,33 +1,42 @@
-import { addDoc, collection } from "firebase/firestore";
-import React, { useContext, useState } from "react";
+import { addDoc, collection, doc, getDoc, updateDoc } from "firebase/firestore";
+import React, { useCallback, useContext, useEffect, useState } from "react";
 import { FiImage } from "react-icons/fi";
+import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import { db } from "../../../firebaseApp";
+import { PostProps } from "../../home";
 import AuthContext from "../context/AuthContext";
 
-export default function PostForm() {
+export default function PostEditForm() {
+  const params = useParams()
+  const [post, setPost] = useState<PostProps | null>(null)
   const [content, setContent] = useState<string>('')
-  const { user } = useContext(AuthContext)
+  const navigate = useNavigate()
   const handleFileUpload = () => {
 
   }
+
+  const getPost = useCallback(async () => {
+    if (params.id) {
+      const docRef = doc(db, 'posts', params.id)
+      const docSnap = await getDoc(docRef)
+      setPost({ ...(docSnap?.data() as PostProps), id: docSnap.id })
+      setContent(docSnap?.data()?.content)
+    }
+  }, [params.id])
 
   const onSubmit = async (e: any) => {
     e.preventDefault()
 
     try {
-      await addDoc(collection(db, 'posts'), {
-        content: content,
-        createdAt: new Date()?.toLocaleDateString('ko', {
-          hour: '2-digit',
-          minute: '2-digit',
-          second: '2-digit'
-        }),
-        uid: user?.uid,
-        email: user?.email
-      })
-      setContent("")
-      toast.success("게시글을 생성했습니다.")
+      if (post) {
+        const postRef = doc(db, 'posts', post?.id)
+        await updateDoc(postRef, {
+          content: content,
+        })
+        navigate(`/post/${post?.id}`)
+        toast.success("게시글을 수정했습니다.")
+      }
     } catch (error: any) {
       console.log(error)
     }
@@ -40,6 +49,10 @@ export default function PostForm() {
       setContent(value)
     }
   }
+
+  useEffect(() => {
+    if (params.id) getPost();
+  }, [getPost, params.id]);
 
   return (
     <form className="post-form" onSubmit={onSubmit}>
@@ -62,7 +75,7 @@ export default function PostForm() {
           onChange={handleFileUpload}
           className='hidden'
         />
-        <input type='submit' value='Tweet' className='post-form__submit-btn' />
+        <input type='submit' value='수정' className='post-form__submit-btn' />
       </div>
     </form>
   )
