@@ -23,8 +23,8 @@
 ## 상태관리
 
 - Recoil, React Context API
-- 권한관리
-- 다국어처리 기능
+- 권한관리 - React Context API
+- 다국어처리 기능 - recoil 라이브러리 활용
 
 ## 애니메이션 & 스타일링
 
