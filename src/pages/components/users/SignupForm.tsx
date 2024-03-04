@@ -103,7 +103,10 @@ export default function SignupForm() {
   };
 
   return (
-    <form className="form form--lg" onSubmit={onSubmit}>
+    <form
+      className="form form--lg"
+      onSubmit={onSubmit}
+    >
       <div className="form__title">회원가입</div>
       <div className="form__block">
         <label htmlFor="email">이메일</label>
@@ -146,7 +149,10 @@ export default function SignupForm() {
 
       <div className="form__block">
         계정이 있으신가요?
-        <Link to="/users/login" className="form__link">
+        <Link
+          to="/users/login"
+          className="form__link"
+        >
           로그인하기
         </Link>
       </div>

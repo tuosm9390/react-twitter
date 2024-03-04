@@ -1,35 +1,44 @@
-import { collection, onSnapshot, orderBy, query, where } from "firebase/firestore"
-import { useContext, useEffect, useState } from "react"
-import { db } from "../../firebaseApp"
-import AuthContext from "../components/context/AuthContext"
-import PostBox from "../components/posts/PostBox"
-import { PostProps } from "../home"
+import {
+  collection,
+  onSnapshot,
+  orderBy,
+  query,
+  where,
+} from "firebase/firestore";
+import { useContext, useEffect, useState } from "react";
+import { db } from "../../firebaseApp";
+import AuthContext from "../components/context/AuthContext";
+import PostBox from "../components/posts/PostBox";
+import { PostProps } from "../home";
 
 export default function SearchPage() {
-  const [posts, setPosts] = useState<PostProps[]>([])
-  const [tagQuery, setTagQuery] = useState<string>('')
-  const { user } = useContext(AuthContext)
+  const [posts, setPosts] = useState<PostProps[]>([]);
+  const [tagQuery, setTagQuery] = useState<string>("");
+  const { user } = useContext(AuthContext);
 
   const onChange = (e: any) => {
-    setTagQuery(e?.target?.value?.trim())
-  }
+    setTagQuery(e?.target?.value?.trim());
+  };
 
   useEffect(() => {
     if (user) {
-      let postsRef = collection(db, 'posts')
-      let postsQuery = query(postsRef, where('hashTags', 'array-contains-any', [tagQuery]),
-        orderBy('createdAt', 'desc'))
+      let postsRef = collection(db, "posts");
+      let postsQuery = query(
+        postsRef,
+        where("hashTags", "array-contains-any", [tagQuery]),
+        orderBy("createdAt", "desc")
+      );
 
       onSnapshot(postsQuery, (snapShot) => {
         let dataObj = snapShot?.docs?.map((doc) => ({
           ...doc?.data(),
-          id: doc?.id
-        }))
+          id: doc?.id,
+        }));
 
-        setPosts(dataObj as PostProps[])
-      })
+        setPosts(dataObj as PostProps[]);
+      });
     }
-  }, [tagQuery, user])
+  }, [tagQuery, user]);
 
   return (
     <div className="home">
@@ -38,19 +47,27 @@ export default function SearchPage() {
           <div className="home__title-text">Search</div>
         </div>
         <div className="home__search-div">
-          <input className="home__search" placeholder="해시태그 검색" onChange={onChange} />
+          <input
+            className="home__search"
+            placeholder="해시태그 검색"
+            onChange={onChange}
+          />
         </div>
-        <div className='post'>
-          {posts?.length > 0 ?
+        <div className="post">
+          {posts?.length > 0 ? (
             posts?.map((post) => (
-              <PostBox post={post} key={post.id} />
-            )) : (
-              <div className='post__no-posts'>
-                <div className='post__text'>게시글이 없습니다.</div>
-              </div>
-            )}
+              <PostBox
+                post={post}
+                key={post.id}
+              />
+            ))
+          ) : (
+            <div className="post__no-posts">
+              <div className="post__text">게시글이 없습니다.</div>
+            </div>
+          )}
         </div>
       </div>
     </div>
-  )
+  );
 }

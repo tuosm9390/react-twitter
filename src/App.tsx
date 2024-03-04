@@ -1,28 +1,30 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState } from "react";
 
-import { getAuth, onAuthStateChanged } from 'firebase/auth';
-import { ToastContainer } from 'react-toastify';
+import { getAuth, onAuthStateChanged } from "firebase/auth";
+import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { app } from './firebaseApp';
-import { Layout } from './pages/components/Layout';
-import Router from './pages/components/Router';
-import Loader from './pages/components/loader/Loader';
+import { app } from "./firebaseApp";
+import { Layout } from "./pages/components/Layout";
+import Router from "./pages/components/Router";
+import Loader from "./pages/components/loader/Loader";
 
 function App() {
-  const auth = getAuth(app)
-  const [init, setInit] = useState<boolean>(false)
-  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(!!auth?.currentUser)
+  const auth = getAuth(app);
+  const [init, setInit] = useState<boolean>(false);
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(
+    !!auth?.currentUser
+  );
 
   useEffect(() => {
     onAuthStateChanged(auth, (user) => {
       if (user) {
-        setIsAuthenticated(true)
+        setIsAuthenticated(true);
       } else {
-        setIsAuthenticated(false)
+        setIsAuthenticated(false);
       }
-      setInit(true)
-    })
-  }, [auth])
+      setInit(true);
+    });
+  }, [auth]);
 
   return (
     <Layout>
