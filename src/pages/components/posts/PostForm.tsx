@@ -7,7 +7,6 @@ import { toast } from "react-toastify";
 import { v4 as uuidv4 } from "uuid";
 import { db, storage } from "../../../firebaseApp";
 import AuthContext from "../context/AuthContext";
-import PostHeader from "./PostHeader";
 
 export default function PostForm() {
   const [content, setContent] = useState<string>("");
@@ -107,7 +106,6 @@ export default function PostForm() {
 
   return (
     <div className="post">
-      <PostHeader />
       <form
         className="post-form"
         onSubmit={onSubmit}
