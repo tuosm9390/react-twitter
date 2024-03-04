@@ -3,6 +3,7 @@ import { useContext } from "react";
 import { AiOutlineSearch } from "react-icons/ai";
 import { BiUserCircle } from "react-icons/bi";
 import { BsHouse } from "react-icons/bs";
+import { IoMdNotificationsOutline } from "react-icons/io";
 import { MdLogin, MdLogout } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
@@ -36,6 +37,13 @@ export default function MenuList() {
         >
           <AiOutlineSearch />
           Search
+        </button>
+        <button
+          type="button"
+          onClick={() => navigate("/notifications")}
+        >
+          <IoMdNotificationsOutline />
+          Notifications
         </button>
         {user === null ? (
           <button
