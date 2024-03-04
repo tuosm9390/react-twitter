@@ -1,7 +1,7 @@
 # React Twitter
 
 - React, Firebase를 이용한 실시간 트위터 프로젝트 입니다.
-- URL: [https://fastcampus-react-twitter.vercel.app/](https://fastcampus-react-twitter.vercel.app/)
+- URL: [https://react-twitter-five.vercel.app/](https://react-twitter-five.vercel.app/)
 
 <br />
 
