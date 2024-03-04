@@ -138,7 +138,7 @@ export default function LoginForm() {
           className="form__btn--submit"
           disabled={error?.length > 0}
         >
-          {t("SIGNUP_LINK")}
+          {t("MENU_LOGIN")}
         </button>
       </div>
       <div className="form__block">
