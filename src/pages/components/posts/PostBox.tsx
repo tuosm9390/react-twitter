@@ -5,18 +5,21 @@ import {
   doc,
   updateDoc,
 } from "firebase/firestore";
+import { db } from "firebaseApp";
+import { PostProps } from "pages/home";
 import { useContext } from "react";
 import { AiFillHeart, AiOutlineHeart } from "react-icons/ai";
 import { FaRegComment, FaUserCircle } from "react-icons/fa";
 import { Link, useNavigate } from "react-router-dom";
 
 import { deleteObject, ref } from "firebase/storage";
+import { storage } from "firebaseApp";
 
+import useTranslation from "hooks/useTranslations";
 import { toast } from "react-toastify";
-import { db, storage } from "../../../firebaseApp";
-import { PostProps } from "../../home";
 import AuthContext from "../context/AuthContext";
 import FollowingBox from "../following/FollowingBox";
+
 interface PostBoxProps {
   post: PostProps;
 }
@@ -25,6 +28,7 @@ export default function PostBox({ post }: PostBoxProps) {
   const { user } = useContext(AuthContext);
   const navigate = useNavigate();
   const imageRef = ref(storage, post?.imageUrl);
+  const t = useTranslation();
 
   const toggleLike = async () => {
     const postRef = doc(db, "posts", post.id);
@@ -62,7 +66,10 @@ export default function PostBox({ post }: PostBoxProps) {
   };
 
   return (
-    <div className="post__box" key={post?.id}>
+    <div
+      className="post__box"
+      key={post?.id}
+    >
       <div className="post__box-profile">
         <div className="post__flex">
           {post?.profileUrl ? (
@@ -79,7 +86,7 @@ export default function PostBox({ post }: PostBoxProps) {
               <div className="post__email">{post?.email}</div>
               <div className="post__createdAt">{post?.createdAt}</div>
             </div>
-            <FollowingBox post={post}/>
+            <FollowingBox post={post} />
           </div>
         </div>
         <Link to={`/posts/${post?.id}`}>
@@ -97,7 +104,10 @@ export default function PostBox({ post }: PostBoxProps) {
           )}
           <div className="post-form__hashtags-outputs">
             {post?.hashTags?.map((tag, index) => (
-              <span className="post-form__hashtags-tag" key={index}>
+              <span
+                className="post-form__hashtags-tag"
+                key={index}
+              >
                 #{tag}
               </span>
             ))}
@@ -113,15 +123,22 @@ export default function PostBox({ post }: PostBoxProps) {
               className="post__delete"
               onClick={handleDelete}
             >
-              Delete
+              {t("BUTTON_DELETE")}
             </button>
-            <button type="button" className="post__edit">
-              <Link to={`/posts/edit/${post?.id}`}>Edit</Link>
+            <button
+              type="button"
+              className="post__edit"
+            >
+              <Link to={`/posts/edit/${post?.id}`}>{t("BUTTON_EDIT")}</Link>
             </button>
           </>
         )}
 
-        <button type="button" className="post__likes" onClick={toggleLike}>
+        <button
+          type="button"
+          className="post__likes"
+          onClick={toggleLike}
+        >
           {user && post?.likes?.includes(user.uid) ? (
             <AiFillHeart />
           ) : (
@@ -129,7 +146,10 @@ export default function PostBox({ post }: PostBoxProps) {
           )}
           {post?.likeCount || 0}
         </button>
-        <button type="button" className="post__comments">
+        <button
+          type="button"
+          className="post__comments"
+        >
           <FaRegComment />
           {post?.comments?.length || 0}
         </button>

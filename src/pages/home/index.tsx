@@ -1,3 +1,5 @@
+import { useCallback, useContext, useEffect, useState } from "react";
+
 import {
   collection,
   doc,
@@ -6,12 +8,11 @@ import {
   query,
   where,
 } from "firebase/firestore";
-import { UserProps } from "pages/components/following/FollowingBox";
-import { useCallback, useContext, useEffect, useState } from "react";
-import { db } from "../../firebaseApp";
-import AuthContext from "../components/context/AuthContext";
-import PostBox from "../components/posts/PostBox";
-import PostForm from "../components/posts/PostForm";
+import { db } from "firebaseApp";
+import useTranslation from "hooks/useTranslations";
+import AuthContext from "pages/components/context/AuthContext";
+import PostBox from "pages/components/posts/PostBox";
+import PostForm from "pages/components/posts/PostForm";
 
 export interface PostProps {
   id: string;
@@ -23,8 +24,12 @@ export interface PostProps {
   likes?: string[];
   likeCount?: number;
   comments?: any;
-  hashTags: string[];
-  imageUrl: string;
+  hashTags?: string[];
+  imageUrl?: string;
+}
+
+interface UserProps {
+  id: string;
 }
 
 type tabType = "all" | "following";
@@ -35,6 +40,7 @@ export default function HomePage() {
   const [followingIds, setFollowingIds] = useState<string[]>([""]);
   const [activeTab, setActiveTab] = useState<tabType>("all");
   const { user } = useContext(AuthContext);
+  const t = useTranslation();
 
   // 실시간 동기화로 user의 팔로잉 id 배열 가져오기
   const getFollowingIds = useCallback(async () => {
@@ -63,16 +69,16 @@ export default function HomePage() {
         orderBy("createdAt", "desc")
       );
 
-      onSnapshot(postsQuery, (snapshot) => {
-        let dataObj = snapshot.docs.map((doc) => ({
+      onSnapshot(postsQuery, (snapShot) => {
+        let dataObj = snapShot.docs.map((doc) => ({
           ...doc.data(),
           id: doc?.id,
         }));
         setPosts(dataObj as PostProps[]);
       });
 
-      onSnapshot(followingQuery, (snapshot) => {
-        let dataObj = snapshot.docs.map((doc) => ({
+      onSnapshot(followingQuery, (snapShot) => {
+        let dataObj = snapShot.docs.map((doc) => ({
           ...doc.data(),
           id: doc?.id,
         }));
@@ -88,22 +94,31 @@ export default function HomePage() {
   return (
     <div className="home">
       <div className="home__top">
-        <div className="home__title">Home</div>
+        <div className="home__title">{t("MENU_HOME")}</div>
         <div className="home__tabs">
           <div
-            className={`home__tab ${activeTab === "all" && "home__tab--active"}`}
-            onClick={() => setActiveTab("all")}
+            className={`home__tab ${
+              activeTab === "all" && "home__tab--active"
+            }`}
+            onClick={() => {
+              setActiveTab("all");
+            }}
           >
-            All
+            {t("TAB_ALL")}
           </div>
           <div
-            className={`home__tab ${activeTab === "following" && "home__tab--active"}`}
-            onClick={() => setActiveTab("following")}
+            className={`home__tab ${
+              activeTab === "following" && "home__tab--active"
+            }`}
+            onClick={() => {
+              setActiveTab("following");
+            }}
           >
-            Following
+            {t("TAB_FOLLOWING")}
           </div>
         </div>
       </div>
+
       <PostForm />
       {activeTab === "all" && (
         <div className="post">
@@ -116,7 +131,7 @@ export default function HomePage() {
             ))
           ) : (
             <div className="post__no-posts">
-              <div className="post__text">게시글이 없습니다.</div>
+              <div className="post__text">{t("NO_POSTS")}</div>
             </div>
           )}
         </div>
@@ -132,7 +147,7 @@ export default function HomePage() {
             ))
           ) : (
             <div className="post__no-posts">
-              <div className="post__text">게시글이 없습니다.</div>
+              <div className="post__text">{t("NO_POSTS")}</div>
             </div>
           )}
         </div>

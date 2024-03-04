@@ -1,4 +1,5 @@
 import { getAuth, signOut } from "firebase/auth";
+import { app } from "firebaseApp";
 import { useContext } from "react";
 import { AiOutlineSearch } from "react-icons/ai";
 import { BiUserCircle } from "react-icons/bi";
@@ -6,13 +7,15 @@ import { BsHouse } from "react-icons/bs";
 import { IoMdNotificationsOutline } from "react-icons/io";
 import { MdLogin, MdLogout } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
+
+import useTranslation from "hooks/useTranslations";
 import { toast } from "react-toastify";
-import { app } from "../../firebaseApp";
 import AuthContext from "./context/AuthContext";
 
 export default function MenuList() {
-  const navigate = useNavigate();
   const { user } = useContext(AuthContext);
+  const navigate = useNavigate();
+  const t = useTranslation();
 
   return (
     <div className="footer">
@@ -22,36 +25,36 @@ export default function MenuList() {
           onClick={() => navigate("/")}
         >
           <BsHouse />
-          Home
+          {t("MENU_HOME")}
         </button>
         <button
           type="button"
           onClick={() => navigate("/profile")}
         >
           <BiUserCircle />
-          Profile
+          {t("MENU_PROFILE")}
         </button>
         <button
           type="button"
           onClick={() => navigate("/search")}
         >
           <AiOutlineSearch />
-          Search
+          {t("MENU_SEARCH")}
         </button>
         <button
           type="button"
           onClick={() => navigate("/notifications")}
         >
           <IoMdNotificationsOutline />
-          Notifications
+          {t("MENU_NOTI")}
         </button>
         {user === null ? (
           <button
             type="button"
-            onClick={() => navigate("/")}
+            onClick={() => navigate("/users/login")}
           >
             <MdLogin />
-            Login
+            {t("MENU_LOGIN")}
           </button>
         ) : (
           <button
@@ -63,7 +66,7 @@ export default function MenuList() {
             }}
           >
             <MdLogout />
-            Logout
+            {t("MENU_LOGOUT")}
           </button>
         )}
       </div>

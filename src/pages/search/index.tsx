@@ -5,16 +5,18 @@ import {
   query,
   where,
 } from "firebase/firestore";
+import { db } from "firebaseApp";
+import useTranslation from "hooks/useTranslations";
+import AuthContext from "pages/components/context/AuthContext";
+import PostBox from "pages/components/posts/PostBox";
+import { PostProps } from "pages/home";
 import { useContext, useEffect, useState } from "react";
-import { db } from "../../firebaseApp";
-import AuthContext from "../components/context/AuthContext";
-import PostBox from "../components/posts/PostBox";
-import { PostProps } from "../home";
 
 export default function SearchPage() {
   const [posts, setPosts] = useState<PostProps[]>([]);
   const [tagQuery, setTagQuery] = useState<string>("");
   const { user } = useContext(AuthContext);
+  const t = useTranslation();
 
   const onChange = (e: any) => {
     setTagQuery(e?.target?.value?.trim());
@@ -44,29 +46,29 @@ export default function SearchPage() {
     <div className="home">
       <div className="home__top">
         <div className="home__title">
-          <div className="home__title-text">Search</div>
+          <div className="home__title-text">{t("MENU_SEARCH")}</div>
         </div>
         <div className="home__search-div">
           <input
             className="home__search"
-            placeholder="해시태그 검색"
+            placeholder={t("SEARCH_HASHTAGS")}
             onChange={onChange}
           />
         </div>
-        <div className="post">
-          {posts?.length > 0 ? (
-            posts?.map((post) => (
-              <PostBox
-                post={post}
-                key={post.id}
-              />
-            ))
-          ) : (
-            <div className="post__no-posts">
-              <div className="post__text">게시글이 없습니다.</div>
-            </div>
-          )}
-        </div>
+      </div>
+      <div className="post">
+        {posts?.length > 0 ? (
+          posts?.map((post) => (
+            <PostBox
+              post={post}
+              key={post.id}
+            />
+          ))
+        ) : (
+          <div className="post__no-posts">
+            <div className="post__text">{t("NO_POSTS")}</div>
+          </div>
+        )}
       </div>
     </div>
   );

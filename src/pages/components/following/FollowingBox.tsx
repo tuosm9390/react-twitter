@@ -9,24 +9,25 @@ import {
   updateDoc,
 } from "firebase/firestore";
 import { db } from "firebaseApp";
+import useTranslation from "hooks/useTranslations";
 import { PostProps } from "pages/home";
 import { useCallback, useContext, useEffect, useState } from "react";
 
 import { toast } from "react-toastify";
-import { isReadable } from "stream";
 import AuthContext from "../context/AuthContext";
 
 interface FollowingProps {
   post: PostProps;
 }
 
-export interface UserProps {
+interface UserProps {
   id: string;
 }
 
 export default function FollowingBox({ post }: FollowingProps) {
   const { user } = useContext(AuthContext);
   const [postFollowers, setPostFollowers] = useState<any>([]);
+  const t = useTranslation();
 
   const onClickFollow = async (e: any) => {
     e.preventDefault();
@@ -55,12 +56,12 @@ export default function FollowingBox({ post }: FollowingProps) {
 
         // 팔로잉 알림 생성
         await addDoc(collection(db, "notifications"), {
-          createdAt: new Date().toLocaleDateString("ko", {
+          createdAt: new Date()?.toLocaleDateString("ko", {
             hour: "2-digit",
             minute: "2-digit",
             second: "2-digit",
           }),
-          content: `${user?.email || user?.displayName}가 팔로우 했습니다.`,
+          content: `${user?.email || user?.displayName}가 팔로우를 했습니다.`,
           url: "#",
           isRead: false,
           uid: post?.uid,
@@ -85,19 +86,6 @@ export default function FollowingBox({ post }: FollowingProps) {
         const followerRef = doc(db, "follower", post?.uid);
         await updateDoc(followerRef, {
           users: arrayRemove({ id: user.uid }),
-        });
-
-        // 팔로잉 알림 생성
-        await addDoc(collection(db, "notifications"), {
-          createdAt: new Date().toLocaleDateString("ko", {
-            hour: "2-digit",
-            minute: "2-digit",
-            second: "2-digit",
-          }),
-          content: `${user?.email || user?.displayName}가 팔로우를 취소했습니다.`,
-          url: "#",
-          isRead: false,
-          uid: post?.uid,
         });
 
         toast.success("팔로우를 취소했습니다.");
@@ -136,7 +124,7 @@ export default function FollowingBox({ post }: FollowingProps) {
             className="post__following-btn"
             onClick={onClickDeleteFollow}
           >
-            Following
+            {t("BUTTON_FOLLOWING")}
           </button>
         ) : (
           <button
@@ -144,7 +132,7 @@ export default function FollowingBox({ post }: FollowingProps) {
             className="post__follow-btn"
             onClick={onClickFollow}
           >
-            Follow
+            {t("BUTTON_FOLLOW")}
           </button>
         ))}
     </>
